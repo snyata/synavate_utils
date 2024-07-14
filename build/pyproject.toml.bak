@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "synutils"
-version = "0.0.1"
+version = "0.1.0"
 description = "Synavate Utility Library"
 authors = ["Synavate Labs"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/nentropy/intel-agent.git"
-packages = [{ include = "langgraph" }]
+
 
 [tool.poetry.dependencies]
 python = ">=3.9.0,<4.0"
