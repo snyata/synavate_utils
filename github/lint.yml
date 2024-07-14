@@ -1,0 +1,57 @@
+name: Lint Code Base
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'  # Adjust the Python version as necessary
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python -
+        echo "${HOME}/.local/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      run: |
+        poetry install
+
+    - name: Run isort
+      run: |
+        poetry run isort .
+      continue-on-error: true
+
+    - name: Run black
+      run: |
+        poetry run black .
+      continue-on-error: true
+
+    - name: Run flake8
+      run: |
+        poetry run flake8 .
+      continue-on-error: true
+
+    - name: Run pylint
+      run: |
+        poetry run find . -name "*.py" | xargs poetry run pylint
+      continue-on-error: true
+
+    - name: Archive Lint Results
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: lint-results
+        path: |
+          .flake8.log
+          .pylint.log

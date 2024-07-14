@@ -1,0 +1,16 @@
+lib/wip/
+.venv/
+venv/
+.vscode/
+__pycache__/
+gcp-pulumi/
+.DS_Store
+.arc/
+tests/
+Dockerfile
+README.md
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+.pytest_cache

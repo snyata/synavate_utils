@@ -1,0 +1,53 @@
+name: Lint Code Base
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'  # Adjust the Python version as necessary
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install isort black flake8 pylint
+
+    - name: Run isort
+      run: |
+        isort .
+      continue-on-error: true
+
+    - name: Run black
+      run: |
+        black .
+      continue-on-error: true
+
+    - name: Run flake8
+      run: |
+        flake8 .
+      continue-on-error: true
+
+    - name: Run pylint
+      run: |
+        find . -name "*.py" | xargs pylint
+      continue-on-error: true
+
+    - name: Archive Lint Results
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: lint-results
+        path: |
+          .flake8.log
+          .pylint.log

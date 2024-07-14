@@ -1,0 +1,49 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@2.1.1
+  pulumi: pulumi/pulumi@1.0.0
+
+executors:
+  python-executor:
+    docker:
+      - image: circleci/python:3.11-slim
+    working_directory: ./app
+
+jobs:
+  build-and-infra:
+    executor: python-executor
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+      - run:
+          name: requirements install
+          command: pip install -r requirements.txt
+      - pulumi/login
+      - run:
+          name: Run tests
+          command: python -m pytest tests
+
+  pulumi-deploy:
+    executor: python-executor
+    steps:
+      - attach_workspace:
+          at: /app
+      - pulumi/login
+      - run:
+          name: Pulumi deploy
+          command: pulumi up --yes
+      - persist_to_workspace:
+          root: /app
+          paths:
+            - .
+
+workflows:
+  version: 2
+  aurora-deploy: # This is the name of the workflow, feel free to change it to better match your workflow.
+    jobs:
+      - build-and-infra
+      - pulumi-deploy:
+          requires:
+            - build-and-infra

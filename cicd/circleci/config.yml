@@ -1,0 +1,108 @@
+version: 2.1
+
+executors:
+  python-executor:
+    environment:
+      DOCKER_USERNAME: $DOCKER_USERNAME
+      DOCKER_ACCESS_TOKEN: $DOCKER_ACCESS_TOKEN
+    docker:
+      - image: cimg/python:3.12.3
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_ACCESS_TOKEN
+    working_directory: ~/aurora-humans-app/
+
+jobs:
+  build:
+    executor: python-executor
+    steps:
+      - setup_remote_docker:
+          version: 20.10.7
+      - checkout
+      - run:
+          name: Docker Login
+          command: docker login -u $DOCKER_USERNAME -p $DOCKER_ACCESS_TOKEN
+      - run:
+          name: Install Dependencies
+          command: |
+            python -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      - run:
+          name: Build Docker Image
+          command: docker build -t my-image .
+      - run:
+          name: Push Docker Image
+          command: |
+            docker tag my-image $DOCKER_USERNAME/my-image:latest
+            docker push $DOCKER_USERNAME/my-image:latest
+
+  setup:
+    executor: python-executor
+    steps:
+      - checkout
+      - run:
+          name: Install Google Cloud SDK
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y apt-transport-https ca-certificates gnupg
+            echo "deb https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+            curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+            sudo apt-get update && sudo apt-get install -y google-cloud-sdk
+      - run:
+          name: Authenticate with GCP
+          command: |
+            echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud config set project your-gcp-project-id
+
+  pulumi-preview:
+    executor: python-executor
+    steps:
+      - checkout
+      - run:
+          name: Install Pulumi
+          command: curl -fsSL https://get.pulumi.com | sh
+      - run:
+          name: Install dependencies
+          command: pip install -r requirements.txt
+      - run:
+          name: Pulumi stack select
+          command: pulumi stack select dev
+      - run:
+          name: Pulumi preview
+          command: pulumi preview --yes
+
+  pulumi-deploy:
+    executor: python-executor
+    steps:
+      - checkout
+      - run:
+          name: Install Pulumi
+          command: curl -fsSL https://get.pulumi.com | sh
+      - run:
+          name: Install dependencies
+          command: pip install -r requirements.txt
+      - run:
+          name: Pulumi stack select
+          command: pulumi stack select dev
+      - run:
+          name: Pulumi deploy
+          command: pulumi up --yes
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - build:
+          context:
+            - build-env-vars
+            - docker-hub-creds
+      - setup:
+          requires:
+            - build
+      - pulumi-preview:
+          requires:
+            - setup
+      - pulumi-deploy:
+          requires:
+            - pulumi-preview
