@@ -4,8 +4,11 @@ version = "0.0.1"
 description = "Synavate Utility Library"
 authors = ["Synavate Labs"]
 license = "MIT"
+packages = [
+    { include = "synutils", from = "src" }
+]
 readme = "README.md"
-repository = "https://github.com/orion-constellation/synavate-utils.git"
+repository = "https://github.com/snyata/synavate_utils"
 
 
 [tool.poetry.dependencies]
