@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "synutils"
+name = "synavate"
 version = "0.0.1"
 description = "Synavate Utility Library"
 authors = ["Synavate Labs"]
