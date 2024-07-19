@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "synavate"
-version = "0.0.1"
+version = "0.0.2"
 description = "Synavate Utility Library"
 authors = ["Synavate Labs"]
 license = "MIT"

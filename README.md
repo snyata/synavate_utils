@@ -1,65 +1,57 @@
-# Synavate Utilities
-### A collection of utilities regularly used.
+# Synavate Utilities 🌟
 
-blog 📚
-blog/init.py: Initializes the blog module.
-blog/blog_content.md: Markdown content for the blog.
-blog/generate_blog.py: Script to generate blog content.
+Synavate Utilities is a comprehensive package designed to streamline and enhance your data processing and analysis workflows. Packed with powerful tools and utilities, this package is essential for data scientists, engineers, and developers who work with complex data sets and need efficient solutions for their tasks. 📊🔧
 
-build 🔨
-build/Makefile: Makefile for build automation.
-build/pyproject.toml: Project configuration file.
+## Key Features
 
-cicd 🔄
-cicd/init.py: Initializes the CICD module.
-cicd/circleci/config.yml: CircleCI configuration file.
-cicd/gcp: GCP-specific CI/CD configurations.
+### Data Generation & Testing 🧪
 
-db 🗃️
-db/init.py: Initializes the database module.
-db/chroma/init.py: Initializes the chroma submodule.
-db/chroma/local_load.py: Script for local data loading.
-db/chroma/main.py: Main script for Chroma operations.
-db/dbmain.py: Main database script.
-db/mongodb-with-fastapi/init.py: Initializes the MongoDB FastAPI submodule.
-db/mongodb-with-fastapi/app.py: Main FastAPI application script.
+- **generate-tests**: Automatically generate test cases and manage test outputs with ease. This includes utilities for creating test data, managing configurations, and tracking utilities.
 
-docker 🐋
-docker/Dockerfile: Dockerfile for building the main container.
-docker/Streamlit_Dockerfile: Dockerfile for Streamlit application.
+### Documentation & CI/CD 📄
 
-github 🐙
-github/init.py: Initializes the GitHub module.
-github/lint.yml: Linting configuration for GitHub actions.
-github/new/git_template.md: Git template for new projects.
+- **autodoc_generator**: Generate documentation automatically for your projects.
+- **cicd**: Configuration files and scripts for setting up continuous integration and continuous deployment pipelines using tools like CircleCI and Google Cloud Platform.
 
-logs 📜
-logs/init.py: Initializes the logging module.
-logs/logger/logger.py: Main logger script.
-logs/logger/logging_config.yaml: Configuration for logging.
+### Data Handling & Storage 📦
 
-priv 🔒
-priv/PII_Removal/init.py: Initializes the PII removal module.
-priv/PII_Removal/remove.py: Main script for removing PII.
+- **db**: Utilities for interacting with various databases including MongoDB, Redis, and Chroma. Provides scripts and modules for data loading, querying, and storage.
+- **py**: Python modules for formatting, decorators, and GCP interaction.
 
-py 🐍
-py/decorators/example.py: Example decorator.
-py/decorators/template.py: Template for new decorators.
-py/folders.py: Folder management scripts.
-py/formatting/misc_formatting_etc.py: Miscellaneous formatting utilities.
-py/functions/json_enforce.py: JSON enforcement utilities.
-py/functions/json_w_pydantic.py: JSON handling with Pydantic.
-py/gcp.py: Google Cloud Platform utilities.
-py/middlewares/auth/JWT_tokens.py: JWT token utilities.
-py/middlewares/auth/auth_bearer.py: Bearer token authentication.
-py/middlewares/cors.py: CORS middleware.
+### Docker & DevOps 🐳
 
-rs 🦀
-rs/logging/src/main.rs: Main Rust source file for logging.
+- **docker**: Dockerfiles and scripts for containerizing applications, including a specific Dockerfile for Streamlit applications.
+- **scripts**: Zsh scripts for managing folders and other utilities.
 
-scripts 📂
-scripts/folders.zsh: Zsh script for folder management.
+### Logging & Monitoring 📈
 
-vscode 💻
-vscode/devcontainer/devcontainer_util.json: Devcontainer utilities.
-vscode/devcontainer.json_base: Base configuration for devcontainer.
+- **logs**: Tools for setting up and managing logging configurations, including integration with filebeat for log collection and monitoring.
+
+## Getting Started
+
+### Installation
+
+You can install Synavate Utilities via pip:
+
+```bash
+pip install synutils
+```
+
+### Usage
+
+Import the necessary modules from Synavate Utilities in your Python project:
+
+```python
+from synutils import main
+```
+
+### Example
+
+Here's a quick example of how to use one of the utilities:
+
+```python
+from synutils.main import some_utility_function
+
+# Use the utility function for your task
+some_utility_function()
+```
