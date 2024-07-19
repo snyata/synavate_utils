@@ -1,7 +1,8 @@
 import os
-from typing import Dict, LiteralString, Optional
+from typing import Dict, Optional
 from pydantic import BaseModel
 from dotenv import load_dotenv
+
 
 class TemplateModel(BaseModel):
     repo_name: str = "new_repo"
@@ -12,6 +13,7 @@ class TemplateModel(BaseModel):
 
 if os.path.isfile('.env'):
     load_dotenv()
+    print(".ENV FILE LOADED")
 if not os.getenv("OPENAI_API_KEY"):
     raise ValueError("OPENAI_API_KEY environment variable is not set")
 

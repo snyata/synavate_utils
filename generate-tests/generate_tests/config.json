@@ -1,0 +1,19 @@
+{
+    "languages": {
+        "python3": {
+            "source_dir": "generate_tests/generate_tests",
+            "test_dir": "generate_tests/tests",
+            "test_framework": "pytest"
+        },
+        "ts": {
+            "source_dir": "generate_tests/src",
+            "test_dir": "generate_tests/tests",
+            "test_framework": "jest"
+        },
+        "rs": {
+            "source_dir": "generate_tests/src",
+            "test_dir": "generate_tests/tests",
+            "test_framework": "cargo test"
+        }
+    }
+}

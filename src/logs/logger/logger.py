@@ -1,43 +1,85 @@
-# Logger class
-import os
 import logging
 import logging.config
-from dotenv import load_dotenv
+from typing import Dict
+import os
+from pyarrow import compute as pc
+import pyarrow as pa
+import yaml
 
-class LoggerConfig:
-    def __init__(self, config_path):
-        load_dotenv()
-        self.config_path = config_path
-        self.load_configuration()
+def create_logging_config(app_name: str) -> Dict:
+    """
+    Create a logging configuration dictionary with dynamic log filenames.
 
-    def load_configuration(self):
-        """Load logging configuration from a YAML file."""
-        import yaml
-        with open(self.config_path, 'r') as file:
-            config = yaml.safe_load(file.read())
-            logging.config.dictConfig(config)
+    Args:
+        app_name (str): The name of the application.
 
-class AppLogger:
-    def __init__(self, name=__name__):
-        self.logger = logging.getLogger(name)
+    Returns:
+        Dict: The logging configuration dictionary.
+    """
+    date_str = pc.strftime(pa.scalar(pa.now()), format='%d%m').as_py()
+    prefix = app_name[:2].lower()
 
-    def debug(self, message):
-        self.logger.debug(message)
+    log_filename_1 = f"filebeat-{prefix}_{date_str}.log"
+    log_filename_2 = f"filebeat-{prefix}_{date_str}.log"
 
-    def info(self, message):
-        self.logger.info(message)
+    logging_config = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'standard': {
+                'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            }
+        },
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+                'level': 'DEBUG',
+                'formatter': 'standard',
+                'stream': 'ext://sys.stdout'
+            },
+            'file1': {
+                'class': 'logging.FileHandler',
+                'level': 'INFO',
+                'formatter': 'standard',
+                'filename': log_filename_1
+            },
+            'file2': {
+                'class': 'logging.FileHandler',
+                'level': 'INFO',
+                'formatter': 'standard',
+                'filename': log_filename_2
+            }
+        },
+        'root': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'file1', 'file2']
+        }
+    }
 
-    def warning(self, message):
-        self.logger.warning(message)
+    return logging_config
 
-    def error(self, message):
-        self.logger.error(message)
+def setup_logging(app_name: str) -> None:
+    """
+    Set up logging configuration for the application.
 
-    def critical(self, message):
-        self.logger.critical(message)
+    Args:
+        app_name (str): The name of the application.
+    """
+    logging_config = create_logging_config(app_name)
 
-# Example of initializing the LoggerConfig and AppLogger
-if __name__ == "__main__":
-    # Initialize logging
-    config = LoggerConfig('path_to_logging_config.yaml')
-    app_logger = AppLogger(__name__)
+    # Write the logging configuration to a YAML file for reference
+    with open('logging_config.yaml', 'w') as file:
+        yaml.dump(logging_config, file)
+
+    # Apply the logging configuration
+    logging.config.dictConfig(logging_config)
+
+# Example usage
+app_name = __name__
+print(app_name)
+setup_logging(app_name)
+
+logger = logging.getLogger(app_name)
+logger.debug("This is a debug message")
+logger.info("This is an info message")
+logger.error("This is an error message")

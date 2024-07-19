@@ -33,7 +33,7 @@ jobs:
         export PATH="$HOME/.local/bin:$PATH"
         poetry build
 
-    - name: Publish to PyPI
-      run: |
-        export PATH="$HOME/.local/bin:$PATH"
-        poetry publish -- ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_PASSWORD }}
+        - name: Publish to PyPI
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry publish -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }}
